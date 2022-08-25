@@ -54,7 +54,10 @@ class RedisStreamConsume extends Command
             //delete from stream
             Redis::executeRaw(['XDEL', 'test-stream', $id]);
 
-            $output->writeln(json_encode($message) . PHP_EOL);
+            $output->writeln(json_encode([
+                'message_id' => $id,
+                'message' => $message
+            ]) . PHP_EOL);
         }
     }
 }
