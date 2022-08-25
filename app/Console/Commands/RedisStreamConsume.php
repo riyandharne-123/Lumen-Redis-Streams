@@ -41,7 +41,7 @@ class RedisStreamConsume extends Command
         $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         while (true) {
             $data = Redis::executeRaw(['XREADGROUP', 'GROUP', 'test-group', 'test-consumer', 'COUNT', '1', 'STREAMS', 'test-stream', '>']);
-            if(empty($data)) {
+            if(empty($data) || empty($data[0][1])) {
                 continue;
             }
 

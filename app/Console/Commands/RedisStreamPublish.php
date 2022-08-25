@@ -39,7 +39,7 @@ class RedisStreamPublish extends Command
     public function handle()
     {
         while (true) {
-            sleep(1);
+            sleep(0.2);
             echo Redis::executeRaw(['XADD', 'test-stream', '*',
                 'data', json_encode([
                     'random_number' => rand(0, 999),
