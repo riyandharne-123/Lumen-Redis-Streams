@@ -5,14 +5,14 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redis;
 
-class RedisStreamConsume extends Command
+class RedisStreamConsume2 extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'redis:stream-consume';
+    protected $signature = 'redis:stream-consume-2';
 
     /**
      * The console command description.
@@ -40,13 +40,12 @@ class RedisStreamConsume extends Command
     {
         $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         while (true) {
-            $data = Redis::executeRaw(['XREADGROUP', 'GROUP', 'test-group', 'test-consumer', 'COUNT', '1', 'STREAMS', 'test-stream', '>']);
+            $data = Redis::executeRaw(['XREADGROUP', 'GROUP', 'test-group', 'test-consumer-2', 'COUNT', '1', 'STREAMS', 'test-stream', '>']);
             if(empty($data)) {
                 continue;
             }
 
             $id = $data[0][1][0][0];
-            $message = json_decode($data[0][1][0][1][1]);
 
             //acknowledge message
             Redis::executeRaw(['XACK', 'test-stream', 'test-group', $id]);
@@ -54,7 +53,7 @@ class RedisStreamConsume extends Command
             //delete from stream
             Redis::executeRaw(['XDEL', 'test-stream', $id]);
 
-            $output->writeln(json_encode($message) . PHP_EOL);
+            $output->writeln(json_encode($data) . PHP_EOL);
         }
     }
 }

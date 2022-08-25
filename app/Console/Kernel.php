@@ -5,10 +5,6 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
-//commands
-use App\Console\Commands\RedisPublish;
-use App\Console\Commands\RedisStream;
-
 class Kernel extends ConsoleKernel
 {
     /**
@@ -19,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         'App\Console\Commands\RedisStreamTest',
         'App\Console\Commands\RedisStreamConsume',
+        'App\Console\Commands\RedisStreamConsume2',
         'App\Console\Commands\RedisStreamPublish'
     ];
 
