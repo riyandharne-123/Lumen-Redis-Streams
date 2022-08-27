@@ -12,7 +12,7 @@ class RedisStreamPublish extends Command
      *
      * @var string
      */
-    protected $signature = 'redis:stream-publish';
+    protected $signature = 'redis:stream-publish {--seconds=}';
 
     /**
      * The console command description.
@@ -39,8 +39,10 @@ class RedisStreamPublish extends Command
     public function handle()
     {
         while (true) {
-            sleep(0.2);
-            echo Redis::executeRaw(['XADD', 'test-stream', '*',
+            if (!empty($this->option('seconds'))) {
+                sleep((float)$this->option('seconds'));
+            }
+            echo 'message_id: ' . Redis::executeRaw(['XADD', 'test-stream', '*',
                 'data', json_encode([
                     'random_number' => rand(0, 999),
                     'message' => 'Hello World!'

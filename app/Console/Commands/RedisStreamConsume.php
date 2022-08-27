@@ -38,26 +38,33 @@ class RedisStreamConsume extends Command
      */
     public function handle()
     {
-        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         while (true) {
-            $data = Redis::executeRaw(['XREADGROUP', 'GROUP', 'test-group', 'test-consumer', 'COUNT', '1', 'STREAMS', 'test-stream', '>']);
+            $data = Redis::executeRaw(['XREADGROUP', 'GROUP', 'test-group', 'test-consumer', 'COUNT', '5', 'STREAMS', 'test-stream', '>']);
             if(empty($data) || empty($data[0][1])) {
                 continue;
             }
 
-            $id = $data[0][1][0][0];
-            $message = json_decode($data[0][1][0][1][1]);
+            $streams = $data[0][1];
 
-            //acknowledge message
-            Redis::executeRaw(['XACK', 'test-stream', 'test-group', $id]);
+            if(!sizeof($streams) > 0) {
+                continue;
+            }
 
-            //delete from stream
-            Redis::executeRaw(['XDEL', 'test-stream', $id]);
+            foreach ($streams as $stream) {
+                $id = $stream[0];
+                $message = json_decode($stream[1][1]);
 
-            $output->writeln(json_encode([
-                'message_id' => $id,
-                'message' => $message
-            ]) . PHP_EOL);
+                //acknowledge message
+                Redis::executeRaw(['XACK', 'test-stream', 'test-group', $id]);
+
+                //delete from stream
+                Redis::executeRaw(['XDEL', 'test-stream', $id]);
+
+                echo('data: ' . json_encode([
+                    'message_id' => $id,
+                    'message' => $message
+                ]) . PHP_EOL);
+            }
         }
     }
 }
