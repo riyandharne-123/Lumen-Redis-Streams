@@ -39,7 +39,7 @@ class RedisStreamConsume extends Command
     public function handle()
     {
         while (true) {
-            $data = Redis::executeRaw(['XREADGROUP', 'GROUP', 'test-group', 'test-consumer', 'COUNT', '5', 'STREAMS', 'test-stream', '>']);
+            $data = Redis::executeRaw(['XREADGROUP', 'GROUP', 'test-group', 'test-consumer', 'COUNT', '1', 'STREAMS', 'test-stream', '>']);
             if(empty($data) || empty($data[0][1])) {
                 continue;
             }
@@ -62,7 +62,7 @@ class RedisStreamConsume extends Command
 
                 echo('data: ' . json_encode([
                     'message_id' => $id,
-                    'message' => $message
+                    'message' => $message->message
                 ]) . PHP_EOL);
             }
         }

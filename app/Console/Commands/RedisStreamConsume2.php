@@ -38,7 +38,6 @@ class RedisStreamConsume2 extends Command
      */
     public function handle()
     {
-        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         while (true) {
             $data = Redis::executeRaw(['XREADGROUP', 'GROUP', 'test-group', 'test-consumer-2', 'COUNT', '1', 'STREAMS', 'test-stream', '>']);
             if(empty($data) || empty($data[0][1])) {
@@ -54,9 +53,9 @@ class RedisStreamConsume2 extends Command
             //delete from stream
             Redis::executeRaw(['XDEL', 'test-stream', $id]);
 
-            $output->writeln(json_encode([
+            echo('data: ' . json_encode([
                 'message_id' => $id,
-                'message' => $message
+                'message' => $message->message
             ]) . PHP_EOL);
         }
     }
